@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from '../users/interfaces/user.interface';
 import { JwtService } from '@nestjs/jwt';
 import { TokenWrapper } from './interfaces/token-wrapper.interface';
+import { TokenPayload } from './interfaces/token-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -25,9 +26,10 @@ export class AuthService {
   }
 
   async getToken(user: User): Promise<TokenWrapper> {
-    const payload = { username: user.email, sub: user.id };
+    const payload: TokenPayload = { username: user.email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
+      user_id: user.id
     };
   }
 
