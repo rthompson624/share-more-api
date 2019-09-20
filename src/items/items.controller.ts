@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateItemDto } from './dto/create-item.dto';
 import { ItemsService } from './items.service';
@@ -10,8 +10,16 @@ export class ItemsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get()
-  findAll(): Promise<Item[]> {
-    return this.itemsService.findAll();
+  findAll(@Query() queryParams): Promise<Item[]> {
+    // Check for query
+    if (queryParams.name) {
+      return this.itemsService.findAllLikeName(queryParams.name);
+    } else if (queryParams.ownerId) {
+      return this.itemsService.findAllByOwner(queryParams.ownerId);
+    } else {
+      // No query
+      return this.itemsService.findAll();
+    }
   }
 
   @UseGuards(AuthGuard('jwt'))

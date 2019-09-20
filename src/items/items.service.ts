@@ -29,4 +29,12 @@ export class ItemsService {
     return await this.itemModel.findByIdAndUpdate(id, item, { new: true });
   }
 
+  async findAllLikeName(name: string): Promise<Item[]> {
+    return await this.itemModel.find({ name: new RegExp(name, 'i') });
+  }
+
+  async findAllByOwner(ownerId: string): Promise<Item[]> {
+    return await this.itemModel.find({ ownerId: ownerId });
+  }
+
 }
