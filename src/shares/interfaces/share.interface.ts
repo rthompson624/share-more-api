@@ -5,6 +5,7 @@ export interface Share {
   itemId: string;
   status: string;
   requestDate: string;
+  approveDate: string;
   shareDate?: string;
   returnDate?: string;
 }

@@ -6,6 +6,7 @@ export const ShareSchema = new mongoose.Schema({
   itemId: String,
   status: String,
   requestDate: String,
+  approveDate: String,
   shareDate: String,
   returnDate: String
 });

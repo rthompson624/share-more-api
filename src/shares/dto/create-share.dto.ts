@@ -4,6 +4,7 @@ export class CreateShareDto {
   readonly itemId: string;
   readonly status: string;
   readonly requestDate: string;
+  readonly approveDate: string;
   readonly shareDate: string;
   readonly returnDate: string;
 }
