@@ -11,13 +11,21 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+    return this.usersService.findAll().then(users => {
+      users.forEach(user => {
+        user.password = null;
+      });
+      return users;
+    });
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   findOne(@Param('id') id): Promise<User> {
-    return this.usersService.findOne(id);
+    return this.usersService.findOne(id).then(user => {
+      user.password = null;
+      return user;
+    });
   }
 
   @Post()
