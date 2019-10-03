@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreateItemDto } from './dto/create-item.dto';
 import { ItemsService } from './items.service';
 import { Item } from './interfaces/item.interface';
+import { ItemQuery } from './interfaces/item-query.interface';
 
 @Controller('items')
 export class ItemsController {
@@ -11,14 +12,13 @@ export class ItemsController {
   @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll(@Query() queryParams): Promise<Item[]> {
-    // Check for query
+    // Check for field queries
     if (queryParams.name) {
-      return this.itemsService.findAllLikeName(queryParams.name);
+      return this.itemsService.findAllLikeName(this.getQuery(queryParams));
     } else if (queryParams.ownerId) {
-      return this.itemsService.findAllByOwner(queryParams.ownerId);
+      return this.itemsService.findAllByOwner(this.getQuery(queryParams));
     } else {
-      // No query
-      return this.itemsService.findAll();
+      return this.itemsService.findAll(this.getQuery(queryParams));
     }
   }
 
@@ -44,6 +44,16 @@ export class ItemsController {
   @Put(':id')
   update(@Body() updateItemDto: CreateItemDto, @Param('id') id): Promise<Item> {
     return this.itemsService.update(id, updateItemDto);
+  }
+
+  private getQuery(queryParams: any): ItemQuery {
+    let query: ItemQuery = {};
+    if (queryParams['$limit']) query.limit = parseInt(queryParams['$limit']);
+    if (queryParams['$skip']) query.skip = parseInt(queryParams['$skip']);
+    if (queryParams['$owner']) query.ownerId = queryParams['$owner'];
+    if (queryParams['$name']) query.name = queryParams['$name'];
+    if (queryParams['$description']) query.description = queryParams['$description'];
+    return query;
   }
 
 }

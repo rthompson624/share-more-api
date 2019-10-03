@@ -1,5 +1,5 @@
 export interface Item {
-  id?: string;
+  _id?: string;
   ownerId: string;
   name: string;
   description?: string;

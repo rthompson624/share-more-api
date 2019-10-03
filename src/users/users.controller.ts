@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, ConflictException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -30,19 +30,28 @@ export class UsersController {
 
   @Post()
   create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.usersService.create(createUserDto);
+    return this.usersService.create(createUserDto).then(user => {
+      user.password = null;
+      return user;
+    });
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   delete(@Param('id') id): Promise<User> {
-    return this.usersService.delete(id);
+    return this.usersService.delete(id).then(user => {
+      user.password = null;
+      return user;
+    });
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Put(':id')
   update(@Body() updateUserDto: CreateUserDto, @Param('id') id): Promise<User> {
-    return this.usersService.update(id, updateUserDto);
+    return this.usersService.update(id, updateUserDto).then(user => {
+      user.password = null;
+      return user;
+    });
   }
 
 }

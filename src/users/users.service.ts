@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { User } from './interfaces/user.interface';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -25,7 +25,17 @@ export class UsersService {
     const passwordHash = await bcrypt.hash(user.password, 10);
     const userHashed = {...user, password: passwordHash};
     const newUser = new this.userModel(userHashed);
-    return await newUser.save();
+    try {
+      return await newUser.save();
+    }
+    catch (error) {
+      if (error['code'] === 11000) {
+        throw new ConflictException('An account with that email already exists');
+      }
+      else {
+        throw error;
+      }
+    }
   }
  
   async delete(id: string): Promise<User> {

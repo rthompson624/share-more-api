@@ -26,10 +26,10 @@ export class AuthService {
   }
 
   async getToken(user: User): Promise<TokenWrapper> {
-    const payload: TokenPayload = { username: user.email, sub: user.id };
+    const payload: TokenPayload = { username: user.email, sub: user._id };
     return {
       access_token: this.jwtService.sign(payload),
-      user_id: user.id
+      user_id: user._id
     };
   }
 
