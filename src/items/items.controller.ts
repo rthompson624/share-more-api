@@ -16,11 +16,9 @@ export class ItemsController {
     // Check for field queries
     if (queryParams.name) {
       return this.itemsService.findAllLikeName(this.getQuery(queryParams));
-    }
-    else if (queryParams.ownerId) {
+    } else if (queryParams.ownerId) {
       return this.itemsService.findAllByOwner(this.getQuery(queryParams));
-    }
-    else {
+    } else {
       return this.itemsService.findAll(this.getQuery(queryParams));
     }
   }
@@ -50,12 +48,12 @@ export class ItemsController {
   }
 
   private getQuery(queryParams: any): ItemQuery {
-    let query: ItemQuery = {};
-    if (queryParams['$limit']) query.limit = parseInt(queryParams['$limit']);
-    if (queryParams['$skip']) query.skip = parseInt(queryParams['$skip']);
-    if (queryParams['owner']) query.ownerId = queryParams['owner'];
-    if (queryParams['name']) query.name = queryParams['name'];
-    if (queryParams['description']) query.description = queryParams['description'];
+    const query: ItemQuery = {};
+    query.limit = queryParams.$limit ? parseInt(queryParams.$limit, 10) : null;
+    query.skip = queryParams.$skip ? parseInt(queryParams.$skip, 10) : null;
+    query.ownerId = queryParams.ownerId ? queryParams.ownerId : null;
+    query.name = queryParams.name ? queryParams.name : null;
+    query.description = queryParams.description ? queryParams.description : null;
     return query;
   }
 
