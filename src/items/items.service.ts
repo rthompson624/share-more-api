@@ -23,6 +23,10 @@ export class ItemsService {
     return await this.pageSearch({ ownerId: query.ownerId }, this.getOptions(query));
   }
 
+  async findAllNotByOwner(query: ItemQuery): Promise<ItemsPage> {
+    return await this.pageSearch({ ownerId: { $ne: query.ownerId } }, this.getOptions(query));
+  }
+
   async findOne(id: string): Promise<Item> {
     return await this.itemModel.findOne({ _id: id });
   }

@@ -13,13 +13,15 @@ export class ItemsController {
   @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll(@Query() queryParams): Promise<ItemsPage> {
-    // Check for field queries
-    if (queryParams.name) {
-      return this.itemsService.findAllLikeName(this.getQuery(queryParams));
-    } else if (queryParams.ownerId) {
-      return this.itemsService.findAllByOwner(this.getQuery(queryParams));
+    const query = this.getQuery(queryParams);
+    if (query.name) {
+      return this.itemsService.findAllLikeName(query);
+    } else if (query.ownerId && query.type === 'user') {
+      return this.itemsService.findAllByOwner(query);
+    } else if (query.ownerId && query.type === 'community') {
+      return this.itemsService.findAllNotByOwner(query);
     } else {
-      return this.itemsService.findAll(this.getQuery(queryParams));
+      return this.itemsService.findAll(query);
     }
   }
 
@@ -52,6 +54,7 @@ export class ItemsController {
     query.limit = queryParams.$limit ? parseInt(queryParams.$limit, 10) : null;
     query.skip = queryParams.$skip ? parseInt(queryParams.$skip, 10) : null;
     query.ownerId = queryParams.ownerId ? queryParams.ownerId : null;
+    query.type = queryParams.type ? queryParams.type : null;
     query.name = queryParams.name ? queryParams.name : null;
     query.description = queryParams.description ? queryParams.description : null;
     return query;
